@@ -1,12 +1,12 @@
 const assert = require('assert')
 const express = require('express')
 const request = require('supertest')
+const PeerList = require('webrtc-signal-http/lib/peer-list')
 const capacityRouter = require('../lib')
 
-const appCreator = (timeoutPeriod, gcInterval) => {
+const appCreator = (peerList) => {
     const router = capacityRouter({
-        timeoutPeriod: timeoutPeriod,
-        gcInterval: gcInterval
+        peerList: peerList
     })
     const app = express()
 
@@ -20,6 +20,23 @@ const appCreator = (timeoutPeriod, gcInterval) => {
 
 describe('webrtc-signal-http-capacity', () => {
     describe('http', () => {
+        it('should inherit properly', () => {
+            const bpl = new PeerList()
+            const app = appCreator(bpl)
+
+            const peerId = app.peerList.addPeer('testPeer', {})
+            app.peerList.setCapacity(peerId, 10)
+
+            assert.equal(bpl.getPeerIds().length, 1)
+
+            app.peerList.setCapacity(peerId, 0)
+
+            // both formats should yeild the same result
+            // ie: capacity is factored in on both
+            assert.equal(app.peerList.format(), '')
+            assert.equal(bpl.format(), '')
+        })
+
         it('should support capacity', (done) => {
             const app = appCreator()
 

@@ -74,10 +74,6 @@ To understand the base API provided by [webrtc-signal-http](https://github.com/b
 
 [Class] - Extends [PeerList](https://github.com/bengreenier/webrtc-signal-http/#peerlist) with the ability to have full peers (that aren't visible in listings).
 
-#### fullList
-
-[Object] - Retrieves a full peer list, where all peers are visible in listings. __Returns__ PeerList.
-
 ### CapacityOpts
 
 [Object] - represents the options that can be given to the capacity creator
