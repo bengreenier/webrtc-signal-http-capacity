@@ -1,6 +1,6 @@
 # webrtc-signal-http-capacity
 
-[![Build Status](https://travis-ci.org/bengreenier/webrtc-signal-http-heartbeat.svg?branch=master)](https://travis-ci.org/bengreenier/webrtc-signal-http-heartbeat)
+[![Build Status](https://travis-ci.org/bengreenier/webrtc-signal-http-capacity.svg?branch=master)](https://travis-ci.org/bengreenier/webrtc-signal-http-capacity)
 
 [![Deploy to Azure](https://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
