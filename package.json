@@ -1,10 +1,10 @@
 {
-  "name": "webrtc-signal-http-heartbeat",
+  "name": "webrtc-signal-http-capacity",
   "version": "1.0.0",
-  "description": "webrtc-signal-http heartbeat timeout extension",
+  "description": "webrtc-signal-http capacity management extension",
   "main": "lib/index.js",
   "bin": {
-    "webrtc-signal-http-heartbeat": "./index.js"
+    "webrtc-signal-http-capacity": "./index.js"
   },
   "scripts": {
     "start": "node index.js",

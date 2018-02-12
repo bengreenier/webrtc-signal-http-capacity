@@ -1,10 +1,10 @@
 const assert = require('assert')
 const express = require('express')
 const request = require('supertest')
-const heartbeatRouter = require('../lib')
+const capacityRouter = require('../lib')
 
 const appCreator = (timeoutPeriod, gcInterval) => {
-    const router = heartbeatRouter({
+    const router = capacityRouter({
         timeoutPeriod: timeoutPeriod,
         gcInterval: gcInterval
     })
@@ -18,44 +18,49 @@ const appCreator = (timeoutPeriod, gcInterval) => {
     return app
 }
 
-describe('webrtc-signal-http-heartbeat', () => {
+describe('webrtc-signal-http-capacity', () => {
     describe('http', () => {
-        it('should support heartbeat', (done) => {
+        it('should support capacity', (done) => {
             const app = appCreator()
 
             const peerId = app.peerList.addPeer('testPeer', {})
 
             request(app)
-                .get(`/heartbeat?peer_id=${peerId}`)
+                .put(`/capacity?peer_id=${peerId}&value=10`)
                 .expect(200)
                 .then(() => {
-                    app.peerList.cancelGc()
+                    const list = app.peerList.format()
+
+                    assert.equal(list, 'testPeer (10),1,0')
                 })
                 .then(done,done)
         })
 
-        it('should gc stale connections', (done) => {
-            const app = appCreator(300, 100)
+        it('should default to infinite capacity', () => {
+            const app = appCreator()
 
             const peerId = app.peerList.addPeer('testPeer', {})
+            const list = app.peerList.format()
+
+            assert.equal(list, 'testPeer (infinite),1,0')
+        })
+
+        it('should disappear from list when capacity hits 0', (done) => {
+            const app = appCreator()
+
+            const peerId = app.peerList.addPeer('testPeer', {})
+            const list = app.peerList.format()
+            assert.equal(list, 'testPeer (infinite),1,0')
 
             request(app)
-                .get(`/heartbeat?peer_id=${peerId}`)
+                .put(`/capacity?peer_id=${peerId}&value=0`)
                 .expect(200)
                 .then(() => {
-                    assert.deepEqual(app.peerList.getPeerIds(), [`${peerId}`])
-                }).then(() => {
-                    return new Promise((resolve, reject) => {
-                        setTimeout(resolve, 400)
-                    })
+                    const list = app.peerList.format()
+
+                    assert.equal(list, '')
                 })
-                .then(() => {
-                    assert.deepEqual(app.peerList.getPeerIds(), [])
-                })
-                .then(() => {
-                    app.peerList.cancelGc()
-                })
-                .then(done, done)
+                .then(done,done)
         })
     })
 })

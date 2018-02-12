@@ -1,24 +1,24 @@
 swagger: '2.0'
 info:
-  description: "[webrtc-signal-http](https://github.com/bengreenier/webrtc-signal-http) heartbeat timeout extension
+  description: "[webrtc-signal-http](https://github.com/bengreenier/webrtc-signal-http) capacity management extension
     \n
     ![logo
-    gif](https://github.com/bengreenier/webrtc-signal-http-heartbeat/raw/master/readme_example.gif)
+    gif](https://github.com/bengreenier/webrtc-signal-http-capacity/raw/master/readme_example.gif)
     \n\n
-    This adds an additional signal message to help prevent stale peers appearing as legitimate, by requiring clients to send this message at a defined interval. Clients that stop sending the message are removed from the [PeerList](https://github.com/bengreenier/webrtc-signal-http#peerlist)."
+    This adds an additional signal message to help servers communicate capacity constraints. Once capacity is reached, clients will no longer see said server in the [PeerList](https://github.com/bengreenier/webrtc-signal-http#peerlist)."
   version: 1.0.0
-  title: webrtc-signal-http-heartbeat
+  title: webrtc-signal-http-capacity
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
 schemes:
   - http
 paths:
-  /heartbeat:
-    get:
-      summary: Indicates a peer is still actively connected and able to signal
+  /capacity:
+    put:
+      summary: Indicates server capacity has changed
       description: >-
-        This endpoint is expected to be called at an interval defined by the extension (default `30s`). The response will be empty.
+        This endpoint is expected to be called at by the server as capacity changes (usually as peers connect). The `value` parameter should be an integer approaching `0`. `0` indicates the server is full. The response will be empty.
       operationId: peerHeartbeat
       produces:
         - text/plain
@@ -28,13 +28,18 @@ paths:
           description: the unique id of the client
           required: true
           type: string
+        - name: value
+          in: query
+          description: the new capacity value
+          required: true
+          type: string
       responses:
         '200':
           description: successful response
         '400':
-          description: missing peer_id
+          description: missing peer_id or value
 externalDocs:
   - description: Find out more on Github
-    url: 'https://github.com/bengreenier/webrtc-signal-http-heartbeat'
+    url: 'https://github.com/bengreenier/webrtc-signal-http-capacity'
   - description: Base API
     url: 'https://github.com/bengreenier/webrtc-signal-http'
