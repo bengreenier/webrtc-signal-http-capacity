@@ -48,7 +48,7 @@ describe('webrtc-signal-http-capacity', () => {
                 .then(() => {
                     const list = app.peerList.format()
 
-                    assert.equal(list, 'testPeer (10),1,0')
+                    assert.equal(list, 'testPeer (10),1,0\n')
                 })
                 .then(done,done)
         })
@@ -59,7 +59,7 @@ describe('webrtc-signal-http-capacity', () => {
             const peerId = app.peerList.addPeer('testPeer', {})
             const list = app.peerList.format()
 
-            assert.equal(list, 'testPeer (infinite),1,0')
+            assert.equal(list, 'testPeer (infinite),1,0\n')
         })
 
         it('should disappear from list when capacity hits 0', (done) => {
@@ -67,7 +67,7 @@ describe('webrtc-signal-http-capacity', () => {
 
             const peerId = app.peerList.addPeer('testPeer', {})
             const list = app.peerList.format()
-            assert.equal(list, 'testPeer (infinite),1,0')
+            assert.equal(list, 'testPeer (infinite),1,0\n')
 
             request(app)
                 .put(`/capacity?peer_id=${peerId}&value=0`)
